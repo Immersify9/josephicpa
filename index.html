@@ -1252,6 +1252,27 @@
       });
 
       localStorage.setItem(THROTTLE_KEY, String(Date.now()));
+
+      // Notification email. Best effort: the submission is already saved,
+      // so a delivery problem must not tell the visitor their message failed.
+      try {
+        await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            organization: val("organization"),
+            service: val("service"),
+            message: message,
+            website: val("website")
+          })
+        });
+      } catch (notifyErr) {
+        console.error("Notification error:", notifyErr);
+      }
+
       form.reset();
       showStatus("Thank you. Your message has been received and I'll get back to you shortly.", false);
       btn.textContent = "Message Sent";
