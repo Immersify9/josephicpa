@@ -1175,6 +1175,8 @@
 <!-- ── CONTACT FORM (Firebase Firestore) ── -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+  import { initializeAppCheck, ReCaptchaV3Provider }
+    from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app-check.js";
   import { getFirestore, collection, addDoc, serverTimestamp }
     from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
@@ -1187,7 +1189,15 @@
     appId: "1:406602738582:web:8791f6df8daf8febd88bb7"
   };
 
-  const db = getFirestore(initializeApp(firebaseConfig));
+  const app = initializeApp(firebaseConfig);
+
+  // App Check verifies the request came from this site in a real browser.
+  initializeAppCheck(app, {
+    provider: new ReCaptchaV3Provider("6Lc9KJEtAAAAAMvjNa4wy6SxEh_yNJsJcVveTvaO"),
+    isTokenAutoRefreshEnabled: true
+  });
+
+  const db = getFirestore(app);
 
   const form      = document.getElementById("contactForm");
   const statusBox = document.getElementById("formStatus");
